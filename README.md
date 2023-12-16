@@ -2,6 +2,13 @@
 
 Apgsearch 1.1 ported in python3.
 
+## Bugs
+
+See <https://github.com/lk050807/apg3earch/blob/main/bugs.md>  
+THIS IS ALPHA SOFTWARE, SO BUGS IS COMMON.  IF YOU FIND A BUG, REPORT IT AT <https://github.com/lk050807/apg3earch/issues>.  
+Or e-mail me at <Apgs3arch@hotmail.com>
+
+
 ## Download
 Mac, Linux, and Window with Git and Unix-ish command line:
 Run:
@@ -21,5 +28,7 @@ At <https://github.com/lk050807/apg3earch>, click Code, than click
 
 ## Usage
 
-Lanch Golly, open the File menu, click Run Script... and open my script;Then follow the in
-
+1. Lanch Golly
+2.  Open the File menu
+3.  Click Run Script...
+4.  Open apgs3arch.py, then follow the instructions.
