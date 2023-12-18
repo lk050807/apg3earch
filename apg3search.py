@@ -2,7 +2,18 @@
 # * Ash Pattern Generator (apgsearch) *
 # *************************************
 # * Version: v1.1  (beta release)     *
-# * Apgs3arch version 0.0  (alpha release)*
+# *                                   *
+# *       All times in UTC+0          *
+# *                                   *
+# *          ALPHA RELEASES           *
+# *                                   *
+# * Apgs3arch version 0 by "lk050807" *
+# * Apgs3arch version 0.0.1 by "dvgrn"*
+# * on 4:03 PM, Dec 17, 2023          *
+# * Apgs3arch version 0.0.2 by "very" *
+# * on 2:20 AM, Dec 18, 2023          *
+# *Apgs3arch version 0.0.3 by lk050807*
+# * on 9:25 PM, Dec 18, 2023          *
 # *************************************
 #
 # -- Processes roughly 100 soups per (second . core . GHz), using caching
@@ -34,7 +45,7 @@
 #
 # -- Support for symmetrical soups.
 #
-# -- Uploads results to the server at http://catagolue.appspot.com (which
+# -- Uploads results to the server at http://https://catagolue.hatsya.com/ (which
 #    currently has collected over 2.7 * 10^12 objects).
 #
 # -- Peer-reviews others' contributions to ensure data integrity for the
@@ -77,9 +88,9 @@ import os
 import urllib.request, urllib.error, urllib.parse
 
 def get_server_address():
-    # Should be 'http://catagolue.appspot.com' for the released version,
+    # Should be 'http://https://catagolue.hatsya.com/' for the released version,
     # and 'http://localhost:8080' for the development version:    
-    return 'http://catagolue.appspot.com'
+    return 'http://catagolue.hatsya.com'
     # return 'http://localhost:8080'
 
 
@@ -87,7 +98,7 @@ def get_server_address():
 # affectionately abbreviated to 'payosha256'):
 #
 # The payosha256_key can be obtained from logging into Catagolue in your
-# web browser and visiting http://catagolue.appspot.com/payosha256
+# web browser and visiting http://https://catagolue.hatsya.com//payosha256
 def authenticate(payosha256_key, operation_name):
 
     g.show("Authenticating with Catagolue via the payosha256 protocol...")
@@ -121,7 +132,7 @@ def authenticate(payosha256_key, operation_name):
         for nonce in range(100000000):
 
             prehash = token + ":" + str(nonce)
-            posthash = hashlib.sha256(prehash).hexdigest()
+            posthash = hashlib.sha256(prehash.encode('utf8')).hexdigest()
 
             if (posthash < target):
                 break
@@ -179,7 +190,7 @@ def catagolue_results(results, payosha256_key, operation_name, endpoint="/apgsea
 # on a SHA-256 cryptographic hash in the obvious way.
 def hashsoup(instring, sym):
 
-    s = hashlib.sha256(instring).digest()
+    s = hashlib.sha256(instring.encode('utf8')).digest()
 
     thesoup = []
 
@@ -192,7 +203,7 @@ def hashsoup(instring, sym):
 
     for j in range(32):
 
-        t = ord(s[j])
+        t = int(s[j])
 
         for k in range(8):
 
@@ -428,7 +439,7 @@ def powerlyse(stepsize, numsteps):
             g.fit()
             g.update()
 
-        if (i > numsteps/2):
+        if (i > numsteps//2):
 
             pointlist.append((math.log(i),math.log(poplist[i]+1.0)))
 
@@ -509,7 +520,7 @@ def linearlyse(maxperiod):
     if (moments[0] == 0):
         return "unidentified"
 
-    return "yl" + str(p) + "_" + str(q) + "_" + str(moments[0]) + "_" + hashlib.md5(prehash).hexdigest()
+    return "yl" + str(p) + "_" + str(q) + "_" + str(moments[0]) + "_" + hashlib.md5(prehash.encode('utf8')).hexdigest()
 
     
 # This explodes pseudo-still-lifes and pseudo-oscillators into their
@@ -654,11 +665,11 @@ def countxwsses():
 
     # Calculate the number of standard spaceships in each phase:
     hacount = degcount[17]
-    macount = degcount[16]/2 - hacount
-    lacount = (degcount[15] - hacount - macount)/2
+    macount = degcount[16]//2 - hacount
+    lacount = (degcount[15] - hacount - macount)//2
     hbcount = degcount[8]
-    mbcount = degcount[7]/2 - hbcount
-    lbcount = (degcount[6] - hbcount - mbcount)/2
+    mbcount = degcount[7]//2 - hbcount
+    lbcount = (degcount[6] - hbcount - mbcount)//2
 
     # Determine the expected degcount given the calculated quantities:
     pcounts = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
@@ -1645,7 +1656,7 @@ class Soup:
             pop5 = int(g.getpop())
             g.run(1)
             pop6 = int(g.getpop())
-            self.incobject("xq4_153", (pop5 - pop6)/5)
+            self.incobject("xq4_153", (pop5 - pop6)//5)
 
         # Remove any blocks, blinkers and beehives:
         g.setrule("APG_ExpungeObjects")
@@ -1661,9 +1672,9 @@ class Soup:
 
         # Blocks, blinkers and beehives removed by ExpungeObjects:
         self.incobject("xs1_1", (pop0-pop1))
-        self.incobject("xs4_33", (pop1-pop2)/4)
-        self.incobject("xp2_7", (pop2-pop3)/5)
-        self.incobject("xs6_696", (pop3-pop4)/8)
+        self.incobject("xs4_33", (pop1-pop2)//4)
+        self.incobject("xp2_7", (pop2-pop3)//5)
+        self.incobject("xs6_696", (pop3-pop4)//8)
 
     # Removes an object incident with (ix, iy) and returns the cell list:
     def grabobj(self, ix, iy):
@@ -2006,7 +2017,7 @@ class Soup:
                 if (period < 0):
                     listofobjs.append("xq"+str(0-period)+"_"+canonised)
                 elif (period == 1):
-                    listofobjs.append("xs"+str(len(livecells)/2)+"_"+canonised)
+                    listofobjs.append("xs"+str(len(livecells)//2)+"_"+canonised)
                 else:
                     listofobjs.append("xp"+str(period)+"_"+canonised)
 
@@ -2039,7 +2050,7 @@ class Soup:
         for i in range(gsize * gsize):
 
             x = int(i % gsize)
-            y = int(i / gsize)
+            y = int(i // gsize)
 
             g.putcells(ashes[3*i], gspacing * x, gspacing * y)
 
@@ -2055,13 +2066,13 @@ class Soup:
 
         # Apply rules to coalesce objects and expunge annoyances such as
         # blocks, blinkers, beehives and gliders:
-        start_time = time.clock()
+        start_time = time.process_time()
         self.census(stepsize)
-        end_time = time.clock()
+        end_time = time.process_time()
         self.ruletime += (end_time - start_time)
 
         # Now begin identifying objects:
-        start_time = time.clock()
+        start_time = time.process_time()
         celllist = g.join(g.getcells(g.getrect()), [0])
 
         if (len(celllist) > 2):
@@ -2106,7 +2117,7 @@ class Soup:
                         self.incobject(unidname, 1)
                         self.awardpoints2(soupid, unidname)
 
-        end_time = time.clock()
+        end_time = time.process_time()
         self.gridtime += (end_time - start_time)
 
         return pathological
@@ -2148,9 +2159,9 @@ class Soup:
                 g.putcells(hashsoup(prehash, sym), 0, 0)
 
             # Run the soup until stabilisation:
-            start_time = time.clock()
+            start_time = time.process_time()
             stepsize = max(stepsize, self.stabilise3())
-            end_time = time.clock()
+            end_time = time.process_time()
             self.qlifetime += (end_time - start_time)
 
             # Ironically, the spelling of this variable is incurrrect:
@@ -2173,7 +2184,7 @@ class Soup:
         # Account for any extra enlargement caused by running CoalesceObjects:
         gspacing += 2 ** (stepsize + 1) + 1000
 
-        start_time = time.clock()
+        start_time = time.process_time()
 
         # Remember the dictionary, just in case we have a pathological object:
         prevdict = self.objectcounts.copy()
@@ -2183,7 +2194,7 @@ class Soup:
         # Process the soups:
         returncode = self.teenager(gsize, gspacing, ashes, stepsize, 0, pos)
 
-        end_time = time.clock()
+        end_time = time.process_time()
 
         # Calculate the mean delay incurred (excluding qlifetime or error-correction):
         meandelay = (end_time - start_time) / (gsize * gsize)
@@ -2291,7 +2302,7 @@ class Soup:
                 # Append a suffix according to whether it is a still-life,
                 # oscillator or moving object:
                 if (period == 1):
-                    descriptor = ("ov_s"+str(len(livecells)/2))
+                    descriptor = ("ov_s"+str(len(livecells)//2))
                 elif (period > 0):
                     descriptor = ("ov_p"+str(period))
                 else:
@@ -2304,7 +2315,7 @@ class Soup:
                 # Prepend a prefix according to whether it is a still-life,
                 # oscillator or moving object:
                 if (period == 1):
-                    descriptor = ("xs"+str(len(livecells)/2)+"_"+canonised)
+                    descriptor = ("xs"+str(len(livecells)//2)+"_"+canonised)
                 elif (period > 0):
                     descriptor = ("xp"+str(period)+"_"+canonised)
                 else:
@@ -2325,10 +2336,10 @@ class Soup:
 
         rowlength = 1 + int(math.sqrt(len(self.superunids)/3))
 
-        for i in range(len(self.superunids)/3):
+        for i in range(len(self.superunids)//3):
 
             xpos = i % rowlength
-            ypos = int(i / rowlength)
+            ypos = int(i // rowlength)
 
             g.putcells(self.superunids[3*i], xpos * (self.gridsize + 8) - self.superunids[3*i + 1], ypos * (self.gridsize + 8) - self.superunids[3*i + 2], 1, 0, 0, 1, "or")
 
@@ -2363,10 +2374,10 @@ class Soup:
         g.show("Writing header information...")
 
         # The MD5 hash of the root string:
-        md5root = hashlib.md5(root).hexdigest()
+        md5root = hashlib.md5(root.encode('utf8')).hexdigest()
 
         # Header information:
-        results = "@VERSION v1.1\n"
+        results = "@VERSION v1.1-4PGS34RCH\n"
         results += "@MD5 "+md5root+"\n"
         results += "@ROOT "+root+"\n"
         results += "@RULE "+self.rg.alphanumeric+"\n"
@@ -2434,7 +2445,7 @@ class Soup:
     def save_soup(self, root, soupnum, symmetry):
 
         # Soup pattern will be stored in a temporary directory:
-        souphash = hashlib.sha256(root + str(soupnum))
+        souphash = hashlib.sha256((root + str(soupnum)).encode('utf8'))
         rlepath = souphash.hexdigest()
         rlepath = g.getdir("temp") + rlepath + ".rle"
         
@@ -2686,9 +2697,9 @@ def apg_main():
     sqrtspp_optimal = 10
 
     # Initialise the census:
-    start_time = time.clock()
-    f = (lambda x : 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'[ord(x) % 56])
-    rootstring = ''.join(map(f, list(hashlib.sha256(payoshakey + datetime.datetime.now().isoformat()).digest()[:12])))
+    start_time = time.process_time()
+    f = (lambda x : 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'[x % 56])
+    rootstring = ''.join(map(f, list(hashlib.sha256((payoshakey + datetime.datetime.now().isoformat()).encode('utf8')).digest()[:12])))
     scount = 0
 
     while (quitapg == False):
@@ -2706,7 +2717,7 @@ def apg_main():
 
             for i in range(1000):
 
-                page_time = time.clock()
+                page_time = time.process_time()
 
                 sqrtspp = (sqrtspp_optimal + (i % 3) - 1) if (i < 150) else (sqrtspp_optimal)
 
@@ -2719,8 +2730,8 @@ def apg_main():
                     delays[i % 3] += meandelay
                 scount += (sqrtspp * sqrtspp)
 
-                current_speed = int((sqrtspp * sqrtspp)/(time.clock() - page_time))
-                alltime_speed = int((scount)/(time.clock() - start_time))
+                current_speed = int((sqrtspp * sqrtspp)/(time.process_time() - page_time))
+                alltime_speed = int((scount)/(time.process_time() - start_time))
                 
                 g.show(str(scount) + " soups processed (" + str(current_speed) +
                        " per second current; " + str(alltime_speed) + " overall)" +
@@ -2763,15 +2774,15 @@ def apg_main():
             if (a == 0):
                 # Reset the census:
                 soup.reset()
-                start_time = time.clock()
+                start_time = time.process_time()
                 f = (lambda x : 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'[ord(x) % 56])
-                rootstring = ''.join(map(f, list(hashlib.sha256(rootstring + payoshakey + datetime.datetime.now().isoformat()).digest()[:12])))
+                rootstring = ''.join(map(f, list(hashlib.sha256((rootstring + payoshakey + datetime.datetime.now().isoformat()).encode('utf8')).digest()[:12])))
                 scount = 0
                 number = orignumber
             else:
                 number += orignumber
 
-    end_time = time.clock()
+    end_time = time.process_time()
 
     soup.save_progress(scount, rootstring, symmstring, payosha256_key=payoshakey)
 
